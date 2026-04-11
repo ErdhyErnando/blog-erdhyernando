@@ -1,0 +1,107 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props {
+    posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+const formatDate = (date: Date) => {
+    return date.toLocaleDateString("de-DE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    });
+};
+---
+
+<div class="blog-list">
+    {
+        posts.map((post) => (
+            <article class="blog-card" data-thumbnail={post.data.thumbnail}>
+                <a href={`/blog/${post.id}`} class="blog-link">
+                    {post.data.title}
+                </a>
+                <div class="blog-info">
+                    <span>{post.data.subtitle}</span>
+                    <span>{formatDate(post.data.date)}</span>
+                </div>
+            </article>
+        ))
+    }
+</div>
+
+<script>
+    // Thumbnail hover behavior
+    let currentImg: HTMLImageElement | null = null;
+
+    const quadrants = [
+        { x: -80, y: -80 }, // top-left
+        { x: 80, y: -80 }, // top-right
+        { x: -80, y: 80 }, // bottom-left
+        { x: 80, y: 80 }, // bottom-right
+    ];
+
+    document.querySelectorAll("[data-thumbnail]").forEach((article) => {
+        article.addEventListener("mouseenter", (e: Event) => {
+            if (!currentImg) {
+                const target = e.target as HTMLElement;
+                const thumbnail = target
+                    .closest("[data-thumbnail]")
+                    ?.getAttribute("data-thumbnail");
+
+                if (thumbnail) {
+                    currentImg = document.createElement("img");
+                    currentImg.src = thumbnail;
+                    currentImg.style.cssText = `
+          position: fixed;
+          pointer-events: none;
+          z-index: 999;
+          width: 220px;
+          max-height: 160px;
+          object-fit: cover;
+          border: 2px solid #000;
+        `;
+
+                    const mouseEvent = e as MouseEvent;
+                    const quadrant =
+                        quadrants[Math.floor(Math.random() * quadrants.length)];
+                    currentImg.style.left = `${mouseEvent.clientX + quadrant.x}px`;
+                    currentImg.style.top = `${mouseEvent.clientY + quadrant.y}px`;
+
+                    document.body.appendChild(currentImg);
+                }
+            }
+        });
+
+        article.addEventListener("mouseleave", () => {
+            if (currentImg) {
+                currentImg.remove();
+                currentImg = null;
+            }
+        });
+    });
+</script>
+
+<style>
+    .blog-list {
+        margin-left: 30%;
+        margin-top: var(--spacing-2xl);
+    }
+
+    .blog-card {
+        margin-bottom: var(--spacing-xl);
+        cursor: pointer;
+    }
+
+    .blog-link {
+        font-weight: 700;
+        font-size: var(--font-size-lg);
+    }
+
+    .blog-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: var(--spacing-sm);
+        font-size: var(--font-size-md);
+    }
+</style>

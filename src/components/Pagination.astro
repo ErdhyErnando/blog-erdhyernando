@@ -1,0 +1,28 @@
+---
+interface Props {
+    currentPage: number;
+    totalPages: number;
+}
+
+const { currentPage, totalPages } = Astro.props;
+const showPrev = currentPage > 1;
+const showNext = currentPage < totalPages;
+---
+
+<div class="pagination-container">
+    {showPrev && <a href={`/?page=${currentPage - 1}`}>← prev</a>}
+    {showPrev && showNext && <span class="pagination-span">·</span>}
+    {showNext && <a href={`/?page=${currentPage + 1}`}>next →</a>}
+</div>
+
+<style>
+    .pagination-container {
+        text-align: center;
+        margin: var(--spacing-2xl) 0;
+        font-size: var(--font-size-base);
+    }
+
+    .pagination-span {
+        margin: 0 var(--spacing-md);
+    }
+</style>
