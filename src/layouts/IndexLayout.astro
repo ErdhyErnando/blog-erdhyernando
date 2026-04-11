@@ -1,0 +1,23 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<BaseLayout title={title}>
+    <div class="base-layout">
+        <slot />
+    </div>
+</BaseLayout>
+
+<style>
+    .base-layout {
+        padding: var(--padding-desktop);
+        max-width: var(--max-width);
+        margin: 0 auto;
+    }
+</style>

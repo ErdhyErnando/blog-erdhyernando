@@ -1,0 +1,116 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+    title: string;
+    date: Date;
+}
+
+const { title, date } = Astro.props;
+
+const formattedDate = date.toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+});
+---
+
+<BaseLayout title={title}>
+    <article class="blog-layout">
+        <div class="blog-container">
+            <a href="/" class="back-link">← Zurück</a>
+            <h1 class="blog-title">{title}</h1>
+            <p class="blog-date">{formattedDate}</p>
+            <div id="read-counter" class="read-counter">Loading...</div>
+        </div>
+        <slot />
+    </article>
+</BaseLayout>
+
+<script>
+    // Read counter fetch on page load
+    const slug = window.location.pathname.split("/blog/")[1]?.replace("/", "");
+
+    if (slug) {
+        fetch(`/api/reads/${slug}`)
+            .then((res) => res.json())
+            .then((data) => {
+                const counter = document.getElementById("read-counter");
+                if (counter) {
+                    const readTime = Math.ceil(
+                        document.body.innerText.split(" ").length / 200,
+                    );
+                    counter.textContent = `${data.count} reads · ${readTime} min read`;
+                }
+            })
+            .catch((err) => console.error("Failed to fetch read count:", err));
+    }
+
+    // Increment read counter on 50% scroll
+    let hasIncremented = false;
+
+    if (slug && !localStorage.getItem(`read_${slug}`)) {
+        const article = document.querySelector("article");
+        if (article) {
+            const triggerPoint = article.offsetTop + article.offsetHeight * 0.5;
+
+            window.addEventListener("scroll", () => {
+                if (!hasIncremented && window.scrollY > triggerPoint) {
+                    hasIncremented = true;
+                    localStorage.setItem(`read_${slug}`, "1");
+
+                    fetch(`/api/reads/${slug}`, { method: "POST" })
+                        .then((res) => res.json())
+                        .then((data) => {
+                            const counter =
+                                document.getElementById("read-counter");
+                            if (counter) {
+                                const readTime = Math.ceil(
+                                    document.body.innerText.split(" ").length /
+                                        200,
+                                );
+                                counter.textContent = `${data.count} reads · ${readTime} min read`;
+                            }
+                        })
+                        .catch((err) =>
+                            console.error(
+                                "Failed to increment read count:",
+                                err,
+                            ),
+                        );
+                }
+            });
+        }
+    }
+</script>
+
+<style>
+    .blog-layout {
+        padding: var(--padding-desktop);
+        max-width: var(--max-width);
+        margin: 0 auto;
+    }
+
+    .blog-container {
+        text-align: center;
+        margin-bottom: var(--spacing-2xl);
+    }
+
+    .back-link {
+        font-size: var(--font-size-base);
+    }
+
+    .blog-title {
+        margin: var(--spacing-md);
+    }
+
+    .blog-date {
+        font-size: var(--font-size-md);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .read-counter {
+        font-size: var(--font-size-md);
+        font-weight: 400;
+    }
+</style>
