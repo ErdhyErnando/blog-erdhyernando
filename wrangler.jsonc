@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "name": "erdhy-blog",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "kv_namespaces": [
+    {
+      "binding": "BLOG_READS",
+      "id": "ae51975b04f04ae985405c072207487c",
+    },
+  ],
+}

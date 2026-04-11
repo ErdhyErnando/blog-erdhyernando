@@ -12,6 +12,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.8",
+    "@astrojs/rss": "^4.0.18",
+    "@fontsource/martian-mono": "^5.2.7",
     "astro": "^6.1.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.81.1"
   }
 }
