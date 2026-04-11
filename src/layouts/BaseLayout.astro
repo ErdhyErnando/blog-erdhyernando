@@ -1,0 +1,38 @@
+---
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+        <meta name="description" content="Erdhy Ernando's Blog" />
+        <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
+
+        <!-- --  RSS autodiscovery ---->
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Erdhy Ernando's Blog"
+            href={new URL("rss.xml", Astro.site)}
+        />
+
+        <!-- Global Styles -->
+        <link rel="stylesheet" href="/src/styles/global.css" />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>
+
+<style is:global>
+    @import "@fontsource/martian-mono/400.css";
+    @import "@fontsource/martian-mono/700.css";
+    @import "@fontsource/martian-mono/800.css";
+</style>
