@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog", ({ data }) => !data.draft);
+    return posts.map((post) => ({
+        params: { slug: post.id },
+        props: { post },
+    }));
+}
+
+interface Props {
+    post: any;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogLayout title={post.data.title} date={post.data.date}>
+    {
+        post.data.thumbnail && (
+            <img
+                src={post.data.thumbnail}
+                alt={post.data.title}
+                class="thumbnail"
+            />
+        )
+    }
+
+    <div class="content">
+        <Content />
+    </div>
+</BlogLayout>
+
+<style is:global>
+    .thumbnail {
+        max-width: 530px;
+        margin: 0 auto var(--spacing-xl);
+        border: 2px solid #000;
+    }
+
+    .content {
+        max-width: var(--max-width);
+        margin: 0 auto;
+    }
+
+    article h2 {
+        font-size: var(--font-size-xl);
+        margin-top: var(--spacing-xl);
+        margin-bottom: var(--spacing-md);
+    }
+
+    article h3 {
+        font-size: var(--font-size-lg);
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-md);
+    }
+
+    article p {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    article ul,
+    article ol {
+        margin-left: 1.5rem;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    article pre {
+        position: relative;
+    }
+</style>

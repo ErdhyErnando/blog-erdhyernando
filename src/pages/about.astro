@@ -1,0 +1,48 @@
+---
+import IndexLayout from "../layouts/IndexLayout.astro";
+---
+
+<IndexLayout title="About — Erdhy Ernando's Blog">
+    <div class="about-container">
+        <h1 class="about-heading">what about it?</h1>
+
+        <div style="text-align: left;">
+            <p style="font-weight: 700;">
+                the main page summarized it pretty well actually. i just want to
+                re-learn how to write, some serious and technical some are just
+                goofing around and some to make money!
+            </p>
+
+            <p style="font-weight: 700;">
+                you can check my other projects at <a
+                    href="https://erdhyernando.xyz"
+                    target="_blank"
+                    rel="noopener noreferrer">erdhyernando.xyz</a
+                >. if you want to ask me random questions or donate gpu my
+                twitter dm and email is always open!
+            </p>
+        </div>
+
+        <div class="about-back">
+            <a href="/">← back</a>
+        </div>
+    </div>
+</IndexLayout>
+
+<style>
+    .about-container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: var(--padding-desktop);
+    }
+
+    .about-heading {
+        text-align: center;
+        margin-bottom: var(--spacing-2xl);
+    }
+
+    .about-back {
+        text-align: center;
+        margin-top: var(--spacing-2xl);
+    }
+</style>
