@@ -89,11 +89,14 @@ const formattedDate = date.toLocaleDateString("de-DE", {
         padding: var(--padding-desktop);
         max-width: var(--max-width);
         margin: 0 auto;
+        box-sizing: border-box;
+        width: 100%;
     }
 
     .blog-container {
         text-align: center;
         margin-bottom: var(--spacing-2xl);
+        overflow-wrap: anywhere;
     }
 
     .back-link {
@@ -112,5 +115,15 @@ const formattedDate = date.toLocaleDateString("de-DE", {
     .read-counter {
         font-size: var(--font-size-md);
         font-weight: 400;
+    }
+
+    @media (max-width: 768px) {
+        .blog-layout {
+            padding: var(--padding-mobile);
+        }
+
+        .blog-container {
+            margin-bottom: var(--spacing-xl);
+        }
     }
 </style>

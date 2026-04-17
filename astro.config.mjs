@@ -8,5 +8,5 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "passthrough",
   }),
-  site: "https://blog.erdhyernando.com",
+  site: "https://blog.erdhyernando.xyz",
 });
