@@ -21,22 +21,318 @@ const { Content } = await render(post);
 ---
 
 <BlogLayout title={post.data.title} date={post.data.date}>
-    {
-        post.data.thumbnail && (
-            <img
-                src={post.data.thumbnail}
-                alt={post.data.title}
-                class="thumbnail"
-            />
-        )
-    }
+    <div class="blog-rail-row">
+        <aside class="blog-rail blog-rail--left" aria-label="Ad space">
+            <p class="blog-rail__ad-copy">
+                Hey — this space is for ads.
+                <a href="mailto:erdhy.ernando@gmail.com">Email me</a> /
+                <a
+                    href="https://x.com/erdhyernando"
+                    target="_blank"
+                    rel="noopener noreferrer">DM me</a
+                >
+                for more detail.
+            </p>
+        </aside>
 
-    <div class="content">
-        <Content />
+        <div class="blog-rail-main">
+            {
+                post.data.thumbnail && (
+                    <img
+                        src={post.data.thumbnail}
+                        alt={post.data.title}
+                        class="thumbnail"
+                    />
+                )
+            }
+
+            <div class="content">
+                <Content />
+            </div>
+        </div>
+
+        <aside class="blog-rail blog-rail--right" aria-label="On this page">
+            <button
+                type="button"
+                class="blog-toc__toggle"
+                id="blog-toc-toggle"
+                aria-expanded="true"
+                aria-controls="blog-toc-panel"
+            >
+                <span class="blog-toc__toggle-label">On this page</span>
+                <span class="blog-toc__toggle-icon" aria-hidden="true">
+                    <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M2.5 4.5L6 8L9.5 4.5"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </span>
+            </button>
+            <div id="blog-toc-panel" class="blog-toc__panel">
+                <nav id="blog-toc" class="blog-toc"></nav>
+            </div>
+        </aside>
     </div>
 </BlogLayout>
 
+<script>
+    function slugify(text: string) {
+        return (
+            text
+                .toLowerCase()
+                .normalize("NFKD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "") || "section"
+        );
+    }
+
+    function ensureHeadingId(heading: Element) {
+        if (heading.id) return;
+        let base = slugify(heading.textContent ?? "");
+        let id = base;
+        let n = 0;
+        while (document.getElementById(id)) {
+            id = `${base}-${++n}`;
+        }
+        heading.id = id;
+    }
+
+    function buildToc() {
+        const root = document.getElementById("blog-toc");
+        if (!root) return;
+
+        const scope = document.querySelector(".content");
+        if (!scope) return;
+
+        const headings = scope.querySelectorAll("h2, h3");
+        if (headings.length > 0) {
+            const ul = document.createElement("ul");
+            ul.className = "blog-toc__list";
+
+            headings.forEach((h) => {
+                ensureHeadingId(h);
+                const li = document.createElement("li");
+                li.className =
+                    h.tagName === "H3"
+                        ? "blog-toc__item blog-toc__item--sub"
+                        : "blog-toc__item";
+                const a = document.createElement("a");
+                a.href = `#${h.id}`;
+                a.textContent = h.textContent?.trim() ?? "";
+                a.className = "blog-toc__link";
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+
+            root.appendChild(ul);
+            return;
+        }
+
+        const paras = Array.from(scope.querySelectorAll("p"))
+            .map((p) => p.textContent?.trim())
+            .filter(Boolean) as string[];
+
+        const excerpt = paras.join(" ").slice(0, 280);
+        const p = document.createElement("p");
+        p.className = "blog-toc__fallback";
+        p.textContent = excerpt
+            ? `${excerpt}${excerpt.length >= 280 ? "…" : ""}`
+            : "No preview.";
+        root.appendChild(p);
+    }
+
+    const TOC_COLLAPSED_KEY = "blog-toc-collapsed";
+
+    function initTocToggle() {
+        const aside = document.querySelector(".blog-rail--right");
+        const toggle = document.getElementById("blog-toc-toggle");
+        const panel = document.getElementById("blog-toc-panel");
+        if (!aside || !toggle || !panel) return;
+
+        function setCollapsed(collapsed: boolean) {
+            aside.classList.toggle("blog-rail--toc-collapsed", collapsed);
+            toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+            panel.toggleAttribute("hidden", collapsed);
+            try {
+                localStorage.setItem(TOC_COLLAPSED_KEY, collapsed ? "1" : "0");
+            } catch {
+                /* ignore */
+            }
+        }
+
+        try {
+            if (localStorage.getItem(TOC_COLLAPSED_KEY) === "1") {
+                setCollapsed(true);
+            }
+        } catch {
+            /* ignore */
+        }
+
+        toggle.addEventListener("click", () => {
+            setCollapsed(!aside.classList.contains("blog-rail--toc-collapsed"));
+        });
+    }
+
+    function boot() {
+        buildToc();
+        initTocToggle();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", boot);
+    } else {
+        boot();
+    }
+</script>
+
 <style is:global>
+    .blog-rail-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        align-items: start;
+    }
+
+    .blog-rail-main {
+        min-width: 0;
+        width: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+    }
+
+    .blog-rail__ad-copy {
+        font-size: var(--font-size-sm);
+        font-weight: 700;
+        margin-bottom: var(--spacing-sm);
+        line-height: var(--line-height-normal);
+    }
+
+    .blog-toc__toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-sm);
+        padding: 0;
+        margin: 0 0 var(--spacing-sm);
+        border: none;
+        background: transparent;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .blog-toc__toggle:hover .blog-toc__toggle-label {
+        text-decoration: underline;
+    }
+
+    .blog-toc__toggle:focus-visible {
+        outline: 2px solid var(--color-fg);
+        outline-offset: 2px;
+    }
+
+    .blog-toc__toggle-label {
+        font-size: var(--font-size-sm);
+        font-weight: 700;
+        line-height: var(--line-height-normal);
+    }
+
+    .blog-toc__toggle-icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+    }
+
+    .blog-rail--toc-collapsed .blog-toc__toggle-icon {
+        transform: rotate(-90deg);
+    }
+
+    .blog-rail--toc-collapsed .blog-toc__toggle {
+        margin-bottom: 0;
+    }
+
+    .blog-toc__panel[hidden] {
+        display: none;
+    }
+
+    .blog-rail {
+        display: none;
+        border: 1px dashed var(--color-fg);
+        padding: var(--spacing-md);
+        box-sizing: border-box;
+    }
+
+    .blog-toc__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .blog-toc__item {
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .blog-toc__item--sub {
+        padding-left: var(--spacing-md);
+    }
+
+    .blog-toc__link {
+        font-size: var(--font-size-xs);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    .blog-toc__fallback {
+        font-size: var(--font-size-xs);
+        line-height: var(--line-height-normal);
+        display: -webkit-box;
+        -webkit-line-clamp: 8;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    @media (min-width: 1100px) {
+        .blog-rail-row {
+            grid-template-columns: minmax(120px, 168px) minmax(0, 780px) minmax(
+                    120px,
+                    168px
+                );
+            column-gap: 4rem;
+            row-gap: 0;
+        }
+
+        .blog-rail {
+            display: block;
+            position: sticky;
+            top: 1rem;
+            align-self: start;
+        }
+
+        .blog-rail--right {
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+
+        .blog-rail-main {
+            margin: 0;
+            max-width: none;
+        }
+    }
+
     .thumbnail {
         display: block;
         width: min(100%, 530px);
@@ -52,6 +348,11 @@ const { Content } = await render(post);
         margin: 0 auto;
         width: 100%;
         min-width: 0;
+    }
+
+    article .content h2,
+    article .content h3 {
+        scroll-margin-top: 1rem;
     }
 
     article h2 {
