@@ -24,9 +24,14 @@ const { title } = Astro.props;
             title="Erdhy Ernando's Blog"
             href={new URL("rss.xml", Astro.site)}
         />
-
     </head>
     <body>
         <slot />
+        <!-- Cloudflare Web Analytics -->
+        <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "6908c11fb97a4079b1df683968351fb0"}'
+        ></script><!-- End Cloudflare Web Analytics -->
     </body>
 </html>
