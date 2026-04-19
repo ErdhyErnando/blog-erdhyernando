@@ -2,7 +2,7 @@
 title: "deez nuts"
 subtitle: "boofa who.."
 date: 2026-04-16
-thumbnail: "/images/blog/baki.webp"
+thumbnail: "/images/blog/deeznuts.webp"
 draft: false 
 ---
 
