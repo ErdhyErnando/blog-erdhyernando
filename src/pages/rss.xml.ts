@@ -3,7 +3,10 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async ({ site }) => {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = await getCollection(
+    "blog",
+    ({ data, id }) => !data.draft && id.startsWith("en/"),
+  );
 
   return rss({
     title: "Erdhy Ernando's Blog",
@@ -14,7 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
       title: post.data.title,
       description: post.data.subtitle,
       pubDate: post.data.date,
-      link: `/blog/${post.id}/`,
+      link: `/en/blog/${post.id.replace(/^en\//, "")}/`,
     })),
     customData: "<language>en-us</language>",
   });

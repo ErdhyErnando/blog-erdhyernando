@@ -4,17 +4,13 @@ subtitle: "brutal training for brutal results"
 date: 2026-04-09
 thumbnail: "/images/blog/baki.webp"
 draft: false
-
 ---
 
 ## the vision
 
-Baki Hanma doesn't train to look good. He doesn't train for Instagram aesthetics or six-pack
-abs for the club. He trains to become a warrior. Every rep is a battle. Every set is a war.
-That's the mindset. That's the philosophy.
+Baki Hanma doesn't train to look good. He doesn't train for Instagram aesthetics or six-pack abs for the club. He trains to become a warrior. Every rep is a battle. Every set is a war. That's the mindset. That's the philosophy.
 
-This isn't about lazy gym sessions with your phone in hand. This is about showing up, shutting up,
-and moving iron like your life depends on it.
+This isn't about lazy gym sessions with your phone in hand. This is about showing up, shutting up, and moving iron like your life depends on it.
 
 ## the training principles
 
@@ -31,15 +27,13 @@ Baki doesn't accept mediocrity. Neither should you.
 
 ### Consistency Over Intensity
 
-You won't PR every session. You won't feel jacked every day. But showing up every single day,
-doing the work, building the compound effect — that's what separates warriors from casuals.
+You won't PR every session. You won't feel jacked every day. But showing up every single day, doing the work, building the compound effect — that's what separates warriors from casuals.
 
 The muscle grows in the recovery. The mind hardens in the repetition.
 
 ### Pain is Information
 
-When your muscles burn, that's not weakness leaving your body. That's weakness recognizing
-a threat and evacuating. Pain is feedback. Pain is proof that you're alive.
+When your muscles burn, that's not weakness leaving your body. That's weakness recognizing a threat and evacuating. Pain is feedback. Pain is proof that you're alive.
 
 Baki seeks pain. He runs toward it. He welcomes it.
 
@@ -73,8 +67,7 @@ Baki didn't become strong because he liked it. He became strong because he refus
 
 There's a difference. One is preference. The other is obsession.
 
-Every rep is a choice. Every set is a declaration. Every session is a referendum on whether
-you want to stay the same or become someone new.
+Every rep is a choice. Every set is a declaration. Every session is a referendum on whether you want to stay the same or become someone new.
 
 The question isn't: "Do I have time to train?"  
 The question is: "Do I have time NOT to?"
