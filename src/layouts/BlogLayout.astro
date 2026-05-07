@@ -4,32 +4,57 @@ import BaseLayout from "./BaseLayout.astro";
 interface Props {
     title: string;
     date: Date;
+    lang?: "en" | "id";
 }
 
-const { title, date } = Astro.props;
+const { title, date, lang = "en" } = Astro.props;
+const labels = {
+    en: {
+        back: "zurück",
+        reads: "reads",
+        minRead: "min read",
+        loading: "Loading...",
+        locale: "en-US",
+    },
+    id: {
+        back: "zurück",
+        reads: "dibaca",
+        minRead: "menit baca",
+        loading: "Memuat...",
+        locale: "id-ID",
+    },
+}[lang];
 
-const formattedDate = date.toLocaleDateString("de-DE", {
+const formattedDate = date.toLocaleDateString(labels.locale, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
 });
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} lang={lang}>
     <article class="blog-layout">
         <div class="blog-container">
-            <a href="/" class="back-link">← Zurück</a>
+            <a href="/" class="back-link">&larr; {labels.back}</a>
             <h1 class="blog-title">{title}</h1>
             <p class="blog-date">{formattedDate}</p>
-            <div id="read-counter" class="read-counter">Loading...</div>
+            <div
+                id="read-counter"
+                class="read-counter"
+                data-reads-label={labels.reads}
+                data-min-read-label={labels.minRead}
+            >
+                {labels.loading}
+            </div>
         </div>
         <slot />
     </article>
 </BaseLayout>
 
 <script>
-    // Read counter fetch on page load
-    const slug = window.location.pathname.split("/blog/")[1]?.replace("/", "");
+    const pathnameParts = window.location.pathname.split("/");
+    const slug =
+        pathnameParts[pathnameParts.length - 1] || pathnameParts.at(-2);
 
     if (slug) {
         fetch(`/api/reads/${slug}`)
@@ -37,16 +62,18 @@ const formattedDate = date.toLocaleDateString("de-DE", {
             .then((data) => {
                 const counter = document.getElementById("read-counter");
                 if (counter) {
+                    const readsLabel = counter.dataset.readsLabel ?? "reads";
+                    const minReadLabel =
+                        counter.dataset.minReadLabel ?? "min read";
                     const readTime = Math.ceil(
                         document.body.innerText.split(" ").length / 200,
                     );
-                    counter.textContent = `${data.count} reads · ${readTime} min read`;
+                    counter.textContent = `${data.count} ${readsLabel} · ${readTime} ${minReadLabel}`;
                 }
             })
             .catch((err) => console.error("Failed to fetch read count:", err));
     }
 
-    // Increment read counter on 50% scroll
     let hasIncremented = false;
 
     if (slug && !localStorage.getItem(`read_${slug}`)) {
@@ -65,11 +92,15 @@ const formattedDate = date.toLocaleDateString("de-DE", {
                             const counter =
                                 document.getElementById("read-counter");
                             if (counter) {
+                                const readsLabel =
+                                    counter.dataset.readsLabel ?? "reads";
+                                const minReadLabel =
+                                    counter.dataset.minReadLabel ?? "min read";
                                 const readTime = Math.ceil(
                                     document.body.innerText.split(" ").length /
                                         200,
                                 );
-                                counter.textContent = `${data.count} reads · ${readTime} min read`;
+                                counter.textContent = `${data.count} ${readsLabel} · ${readTime} ${minReadLabel}`;
                             }
                         })
                         .catch((err) =>

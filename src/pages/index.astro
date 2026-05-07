@@ -6,7 +6,10 @@ import Pagination from "../components/Pagination.astro";
 
 const POST_PER_PAGE = 10;
 
-let allPosts = await getCollection("blog", ({ data }) => !data.draft);
+let allPosts = await getCollection(
+    "blog",
+    ({ data, id }) => !data.draft && id.startsWith("en/"),
+);
 allPosts.sort(
     (a, b) => new Date(b.data.date) - new Date(a.data.date).getTime(),
 );
