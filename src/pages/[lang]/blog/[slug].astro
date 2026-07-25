@@ -500,6 +500,37 @@ const labels = {
         height: auto;
     }
 
+    /* --- BLOG LINKS --- */
+    .content a {
+        text-decoration: underline;
+    }
+
+    /* --- TABLES --- */
+    article table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: var(--spacing-lg);
+        font-size: var(--font-size-sm);
+    }
+
+    article th,
+    article td {
+        border: 1px solid var(--color-fg);
+        padding: var(--spacing-sm) var(--spacing-md);
+        text-align: left;
+        vertical-align: top;
+    }
+
+    article th {
+        background-color: var(--color-fg);
+        color: var(--color-bg);
+        font-weight: 700;
+    }
+
+    article td code {
+        white-space: nowrap;
+    }
+
     @media (max-width: 768px) {
         article h2,
         article h3 {
